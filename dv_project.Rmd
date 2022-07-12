@@ -1,0 +1,591 @@
+---
+title: "Stock Market Visualization Before and After Covid"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+    css: styles.css
+    theme:
+      version: 4
+      bootswatch: yeti
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(quantmod)
+library(highcharter)
+library(DT)
+library(PerformanceAnalytics)
+```
+
+# Apple Stock Analysis
+
+Column {data-width=500, .tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### From 2019 to 2022
+
+```{r}
+price_aapl <- getSymbols("AAPL", auto.assign = FALSE, from="2019-01-01", to="2022-04-01")
+price_aapl_a <- getSymbols("AAPL", auto.assign=FALSE, from="2019-01-01", to="2020-02-01")
+price_aapl_b <- getSymbols("AAPL", auto.assign=FALSE, from="2020-02-01", to="2021-06-01")
+price_aapl_c <- getSymbols("AAPL", auto.assign=FALSE, from="2021-06-01", to="2022-04-01")
+highchart(type="stock") %>% 
+  hc_add_series(price_aapl_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_aapl_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_aapl_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(SMA(na.omit(Cl(price_aapl)),n=50),name="SMA(50)") %>%
+  hc_add_series(SMA(na.omit(Cl(price_aapl)),n=200),name="SMA(200)") %>%
+  hc_title(text="<b>Apple Price Candle Stick Chart 2019-2022</b>")
+```
+
+### Before Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_aapl_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Apple Price Candle Stick Chart from 2019-2020 (before Covid)</b>")
+```
+
+### During Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_aapl_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Apple Price Candle Stick Chart 2020-2021 (during Covid)</b>")
+```
+
+### After Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_aapl_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Apple Price Candle Stick Chart 2021-2022 (after Covid)</b>")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Apple Highest Stock Price during Covid
+
+```{r}
+appl_df_b <- data.frame(price_aapl_b)
+appl_high_b <- max(appl_df_b[ ,2])
+valueBox(round(appl_high_b, digits = 2),
+         caption = "Apple Stock Highest price during Covid",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Apple Lowest Stock Price during Covid
+
+```{r}
+appl_df_b <- data.frame(price_aapl_b)
+appl_low_b <- min(appl_df_b[ ,3])
+valueBox(round(appl_low_b, digits = 2),
+         caption = "Apple Stock Lowest price during Covid",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+### Apple Highest Stock price
+
+```{r}
+appl_df <- data.frame(price_aapl)
+appl_dt <- appl_df[ ,c(1:4)]
+appl_high_a <- max(appl_df[,2])
+valueBox(round(appl_high_a, digits = 2), 
+         caption = "Apple Stock Highest price from 2019 to 2022",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Apple lowest Stock price 
+
+```{r}
+appl_low_a <- min(appl_df[,3])
+valueBox(round(appl_low_a, digits = 2), 
+         caption = "Apple Stock Lowest price from 2019 to 2022",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+### Data table (Search for specific dates)
+
+```{r}
+datatable(appl_dt,
+          options = list(pageLength = 20, info = FALSE))
+```
+
+
+# JP Morgan Stock Analysis
+
+Column {data-width=500, .tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### From 2019 to 2022
+
+```{r}
+price_jpm <- getSymbols("JPM", auto.assign = FALSE, from="2019-01-01", to="2022-04-01")
+price_jpm_a <- getSymbols("JPM", auto.assign=FALSE, from="2019-01-01", to="2020-02-01")
+price_jpm_b <- getSymbols("JPM", auto.assign=FALSE, from="2020-02-01", to="2021-06-01")
+price_jpm_c <- getSymbols("JPM", auto.assign=FALSE, from="2021-06-01", to="2022-04-01")
+highchart(type="stock") %>% 
+  hc_add_series(price_jpm_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_jpm_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_jpm_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(SMA(na.omit(Cl(price_jpm)),n=50),name="SMA(50)") %>%
+  hc_add_series(SMA(na.omit(Cl(price_jpm)),n=200),name="SMA(200)") %>%
+  hc_title(text="<b>JP Morgan Price Candle Stick Chart 2019-2022</b>")
+```
+
+### Before Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_jpm_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>JP Morgan Price Candle Stick Chart from 2019-2020 (before Covid)</b>")
+```
+
+
+### During Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_jpm_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>JP Morgan Price Candle Stick Chart 2020-2021 (during Covid)</b>")
+```
+
+
+### After Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_jpm_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>JP Morgan Price Candle Stick Chart 2021-2022 (after Covid)</b>")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### JPM Highest Stock Price during Covid
+
+```{r}
+jpm_df_b <- data.frame(price_jpm_b)
+jpm_high_b <- max(jpm_df_b[ ,2])
+valueBox(round(jpm_high_b, digits = 2),
+         caption = "JP Morgan Stock Highest price during Covid",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### JPM Lowest Stock Price during Covid
+
+```{r}
+jpm_df_b <- data.frame(price_jpm_b)
+jpm_low_b <- min(jpm_df_b[ ,3])
+valueBox(round(jpm_low_b, digits = 2),
+         caption = "JP Morgan Stock Lowest price during Covid",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+
+### JPM Highest Stock price
+
+```{r}
+jpm_df <- data.frame(price_jpm)
+jpm_dt <- jpm_df[ ,c(1:4)]
+jpm_high_a <- max(jpm_df[,2])
+valueBox(round(jpm_high_a, digits = 2), 
+         caption = "JP Morgan Stock Highest price from 2019 to 2022",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### JPM lowest Stock price 
+
+```{r}
+jpm_low_a <- min(jpm_df[,3])
+valueBox(round(jpm_low_a, digits = 2), 
+         caption = "JP Morgan Stock Lowest price from 2019 to 2022",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+### Data table (Search for specific dates)
+
+```{r}
+datatable(jpm_dt,
+          options = list(pageLength = 20, info = FALSE))
+```
+
+# Moderna Stock Analysis
+
+Column {data-width=500, .tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### From 2019 to 2022
+
+```{r}
+price_mrna <- getSymbols("MRNA", auto.assign = FALSE, from="2019-01-01", to="2022-04-01")
+price_mrna_a <- getSymbols("MRNA", auto.assign=FALSE, from="2019-01-01", to="2020-02-01")
+price_mrna_b <- getSymbols("MRNA", auto.assign=FALSE, from="2020-02-01", to="2021-06-01")
+price_mrna_c <- getSymbols("MRNA", auto.assign=FALSE, from="2021-06-01", to="2022-04-01")
+highchart(type="stock") %>% 
+  hc_add_series(price_mrna_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_mrna_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_mrna_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(SMA(na.omit(Cl(price_mrna)),n=50),name="SMA(50)") %>%
+  hc_add_series(SMA(na.omit(Cl(price_mrna)),n=200),name="SMA(200)") %>%
+  hc_title(text="<b>Moderna Price Candle Stick Chart 2019-2022</b>")
+```
+
+### Before Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_mrna_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Moderna Price Candle Stick Chart from 2019-2020 (before Covid)</b>")
+```
+
+
+### During Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_mrna_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Moderna Price Candle Stick Chart 2020-2021 (during Covid)</b>")
+```
+
+### After Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_mrna_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Moderna Price Candle Stick Chart 2021-2022 (after Covid)</b>")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Moderna Highest Stock Price during Covid
+
+```{r}
+mrna_df_b <- data.frame(price_mrna_b)
+mrna_high_b <- max(mrna_df_b[ ,2])
+valueBox(round(mrna_high_b, digits = 2),
+         caption = "Moderna Stock Highest price during Covid",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Moderna Lowest Stock Price during Covid
+
+```{r}
+mrna_df_b <- data.frame(price_mrna_b)
+mrna_low_b <- min(mrna_df_b[ ,3])
+valueBox(round(mrna_low_b, digits = 2),
+         caption = "Moderna Stock Lowest price during Covid",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+
+### Moderna Highest Stock price
+
+```{r}
+mrna_df <- data.frame(price_mrna)
+mrna_dt <- mrna_df[ ,c(1:4)]
+mrna_high_a <- max(mrna_df[,2])
+valueBox(round(mrna_high_a, digits = 2), 
+         caption = "Moderna Stock Highest price from 2019 to 2022",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Moderna lowest Stock price 
+
+```{r}
+mrna_low_a <- min(mrna_df[,3])
+valueBox(round(mrna_low_a, digits = 2), 
+         caption = "Moderna Stock Lowest price from 2019 to 2022",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+### Data table (Search for specific dates)
+
+```{r}
+datatable(mrna_dt,
+          options = list(pageLength = 20, info = FALSE))
+```
+
+
+# Tesla Stock Analysis
+
+Column {data-width=500, .tabset}
+-----------------------------------------------------------------------
+
+### From 2019 to 2022
+
+```{r}
+price_tsla <- getSymbols("TSLA", auto.assign = FALSE, from="2019-01-01", to="2022-04-01")
+price_tsla_a <- getSymbols("TSLA", auto.assign=FALSE, from="2019-01-01", to="2020-02-01")
+price_tsla_b <- getSymbols("TSLA", auto.assign=FALSE, from="2020-02-01", to="2021-06-01")
+price_tsla_c <- getSymbols("TSLA", auto.assign=FALSE, from="2021-06-01", to="2022-04-01")
+highchart(type="stock") %>% 
+  hc_add_series(price_tsla_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_tsla_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_tsla_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(SMA(na.omit(Cl(price_tsla)),n=50),name="SMA(50)") %>%
+  hc_add_series(SMA(na.omit(Cl(price_tsla)),n=200),name="SMA(200)") %>%
+  hc_title(text="<b>Tesla Price Candle Stick Chart 2019-2022</b>")
+```
+
+### Before Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_tsla_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Tesla Price Candle Stick Chart from 2019-2020 (before Covid)</b>")
+```
+
+### During Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_tsla_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Tesla Price Candle Stick Chart 2020-2021 (during Covid)</b>")
+```
+
+### After Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_tsla_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Tesla Price Candle Stick Chart 2021-2022 (after Covid)</b>")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Apple Highest Stock Price during Covid
+
+```{r}
+tsla_df_b <- data.frame(price_tsla_b)
+tsla_high_b <- max(tsla_df_b[ ,2])
+valueBox(round(tsla_high_b, digits = 2),
+         caption = "Tesla Stock Highest price during Covid",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Apple Lowest Stock Price during Covid
+
+```{r}
+tsla_df_b <- data.frame(price_tsla_b)
+tsla_low_b <- min(tsla_df_b[ ,3])
+valueBox(round(tsla_low_b, digits = 2),
+         caption = "Tesla Stock Lowest price during Covid",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+
+### Apple Highest Stock price
+
+```{r}
+tsla_df <- data.frame(price_tsla)
+tsla_dt <- tsla_df[ ,c(1:4)]
+tsla_high_a <- max(tsla_df[,2])
+valueBox(round(tsla_high_a, digits = 2), 
+         caption = "Tesla Stock Highest price from 2019 to 2022",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Apple lowest Stock price 
+
+```{r}
+tsla_low_a <- min(tsla_df[,3])
+valueBox(round(tsla_low_a, digits = 2), 
+         caption = "Tesla Stock Lowest price from 2019 to 2022",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+### Data table (Search for specific dates)
+
+```{r}
+datatable(tsla_dt,
+          options = list(pageLength = 20, info = FALSE))
+```
+
+
+# Amazon Stock Analysis
+
+Column {data-width=500, .tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### From 2019 to 2022
+
+```{r}
+price_amzn <- getSymbols("AMZN", auto.assign = FALSE, from="2019-01-01", to="2022-04-01")
+price_amzn_a <- getSymbols("AMZN", auto.assign=FALSE, from="2019-01-01", to="2020-02-01")
+price_amzn_b <- getSymbols("AMZN", auto.assign=FALSE, from="2020-02-01", to="2021-06-01")
+price_amzn_c <- getSymbols("AMZN", auto.assign=FALSE, from="2021-06-01", to="2022-04-01")
+highchart(type="stock") %>% 
+  hc_add_series(price_amzn_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_amzn_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(price_amzn_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_add_series(SMA(na.omit(Cl(price_amzn)),n=50),name="SMA(50)") %>%
+  hc_add_series(SMA(na.omit(Cl(price_amzn)),n=200),name="SMA(200)") %>%
+  hc_title(text="<b>Amazon Price Candle Stick Chart 2019-2022</b>")
+```
+
+
+### Before Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_amzn_a, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Amazon Price Candle Stick Chart from 2019-2020 (before Covid)</b>")
+```
+
+
+### During Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_amzn_b, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Amazon Price Candle Stick Chart 2020-2021 (during Covid)</b>")
+```
+
+
+### After Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(price_amzn_c, upColor = "#2ECC71 ", color = "#E74C3C") %>% 
+  hc_title(text="<b>Amazon Price Candle Stick Chart 2021-2022 (after Covid)</b>")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Amazon Highest Stock Price during Covid
+
+```{r}
+amzn_df_b <- data.frame(price_amzn_b)
+amzn_high_b <- max(amzn_df_b[ ,2])
+valueBox(round(amzn_high_b, digits = 2),
+         caption = "Amazon Stock Highest price during Covid",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Amazon Lowest Stock Price during Covid
+
+```{r}
+amzn_df_b <- data.frame(price_amzn_b)
+amzn_low_b <- min(amzn_df_b[ ,3])
+valueBox(round(amzn_low_b, digits = 2),
+         caption = "Amazon Stock Lowest price during Covid",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+
+### Amazon Highest Stock price
+
+```{r}
+amzn_df <- data.frame(price_amzn)
+amzn_dt <- amzn_df[ ,c(1:4)]
+amzn_high_a <- max(amzn_df[,2])
+valueBox(round(amzn_high_a, digits = 2), 
+         caption = "Amazon Stock Highest price from 2019 to 2022",
+         color = "#2ECC71",
+         icon = "fa-arrow-up")
+```
+
+### Apple lowest Stock price 
+
+```{r}
+amzn_low_a <- min(amzn_df[,3])
+valueBox(round(amzn_low_a, digits = 2), 
+         caption = "Amazon Stock Lowest price from 2019 to 2022",
+         color = "#CD6155",
+         icon = "fa-arrow-down")
+```
+
+### Data table (Search for specific dates)
+
+```{r}
+datatable(amzn_dt,
+          options = list(pageLength = 20, info = FALSE))
+```
+
+# Comparison
+
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### Before Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(Cl(price_aapl_a), name="AAPL") %>% 
+  hc_add_series(Cl(price_jpm_a), name="JPM") %>%
+  hc_add_series(Cl(price_mrna_a), name="MRNA") %>%
+  hc_add_series(Cl(price_tsla_a), name="TSLA") %>%
+  # hc_add_series(Cl(price_amzn_a), name="AMZN") %>%
+  hc_title(text="<b>Apple vs JP Morgan vs Moderna vs Tesla vs Amazon Closing Price before Covid</b>")
+```
+
+### During Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(Cl(price_aapl_b), name="AAPL") %>% 
+  hc_add_series(Cl(price_jpm_b), name="JPM") %>%
+  hc_add_series(Cl(price_mrna_b), name="MRNA") %>%
+  hc_add_series(Cl(price_tsla_b), name="TSLA") %>%
+  # hc_add_series(Cl(price_amzn_b), name="AMZN") %>%
+  hc_title(text="<b>Apple vs JP Morgan vs Moderna vs Tesla vs Amazon Closing Price during Covid</b>")
+```
+
+### After Covid
+
+```{r}
+highchart(type="stock") %>% 
+  hc_add_series(Cl(price_aapl_c), name="AAPL") %>% 
+  hc_add_series(Cl(price_jpm_c), name="JPM") %>%
+  hc_add_series(Cl(price_mrna_c), name="MRNA") %>%
+  hc_add_series(Cl(price_tsla_c), name="TSLA") %>%
+  # hc_add_series(Cl(price_amzn_c), name="AMZN") %>%
+  hc_title(text="<b>Apple vs JP Morgan vs Moderna vs Tesla Closing Price after Covid</b>")
+```
+
+## {-}
+
+### Returns
+
+```{r}
+# Calculate the stocks return
+return_appl <- dailyReturn(Cl(price_aapl_b))
+return_jpm <- dailyReturn(Cl(price_jpm_b))
+return_mrna <- dailyReturn(Cl(price_mrna_b))
+return_tsla <- dailyReturn(Cl(price_tsla_b))
+return_amzn <- dailyReturn(Cl(price_amzn_b))
+
+# Combine the returns as one data frame
+returns <- data.frame(return_appl,return_jpm,return_mrna,return_tsla,return_amzn)
+names(returns) <- c("return_appl","return_jpm","return_mrna","return_tsla","return_amzn")
+returns <- as.xts(returns)
+
+# Plot the returns
+charts.PerformanceSummary(returns,main="Daily Return \nApple vs JP Morgan vs Moderna vs Tesla vs Amazon \nduring Covid")
+```
+
